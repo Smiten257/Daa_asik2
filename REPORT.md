@@ -96,31 +96,31 @@ The four PNG files below are generated directly from the current `results/result
 
 ### W1 — Random access
 
-At `n=100000`, `DynamicArray` takes **0.019 ms** and performs **10,000 steps**, while `MyLinkedList` takes **796.886 ms** and performs **502,499,208 steps**. The list's `moves` are **0**, because `get(i)` only reads links and does not modify them.
+At `n=100000`, `DynamicArray` takes **0.022 ms** and performs **10,000 steps**, while `MyLinkedList` takes **713.909 ms** and performs **502,499,208 steps**. The list's `moves` are **0**, because `get(i)` only reads links and does not modify them.
 
 ![W1 benchmark](results/plots/w1.png)
 
 ### W2 — Search
 
-At `n=100000`, both structures perform **74,446,172 steps and comparisons**, while `moves = 0` for both. The measured times are **52.274 ms** for `DynamicArray` and **123.502 ms** for `MyLinkedList`.
+At `n=100000`, both structures perform **74,446,172 steps and comparisons**, while `moves = 0` for both. The measured times are **32.447 ms** for `DynamicArray` and **109.406 ms** for `MyLinkedList`.
 
 ![W2 benchmark](results/plots/w2.png)
 
 ### W3 — Indexed insertion and removal
 
-At `n=100000`, W3 `head` gives `MyLinkedList` **2,000 steps and 2,000 moves**, while `DynamicArray` needs **201,001,000 steps and 200,999,000 moves**. For W3 `middle`, the linked list has **100,002,000 steps and 3,000 moves**; the array has **101,001,000 steps and 100,999,000 moves**. The corresponding times are **52.557 ms vs 0.021 ms** at `head`, and **27.136 ms vs 131.204 ms** at `middle` for array vs list.
+At `n=100000`, W3 `head` gives `MyLinkedList` **2,000 steps and 2,000 moves**, while `DynamicArray` needs **201,001,000 steps and 200,999,000 moves**. For W3 `middle`, the linked list has **100,002,000 steps and 3,000 moves**; the array has **101,001,000 steps and 100,999,000 moves**. The corresponding times are **54.985 ms vs 0.013 ms** at `head`, and **26.734 ms vs 139.173 ms** at `middle` for array vs list.
 
 ![W3 benchmark](results/plots/w3.png)
 
 ### W4 — Priority processing
 
-At `n=100000`, the complete heap workload takes **14.241 ms** and records **3,423,870 steps**, **1,793,043 moves**, and **3,060,040 comparisons**.
+At `n=100000`, the complete heap workload takes **12.433 ms** and records **3,423,870 steps**, **1,793,043 moves**, and **3,060,040 comparisons**.
 
 ![W4 benchmark](results/plots/w4.png)
 
 ### Discussion
 
-`DynamicArray.get(i)` is much faster than `MyLinkedList.get(i)` because the array reaches the requested cell directly, while the list must follow about `i` links. In W1 at `n=100000`, this difference appears as 10,000 steps for the array versus 502,499,208 steps for the list. A cache line is commonly around 64 bytes, so it can hold 16 four-byte `int` values from a contiguous array and bring neighbouring values into cache together. This spatial locality helps the array even when the access pattern becomes less favourable than a single sequential scan. A linked list instead performs pointer chasing, and each node also has object/reference overhead, so the nodes are much less compact than four-byte array elements. This creates more memory traffic and can increase garbage-collector pressure. In W2, both structures perform the same 74,446,172 comparisons, but the array still finishes faster, 52.274 ms versus 123.502 ms, showing the effect of memory locality and object indirection. In W3 at the head, the linked list is better because only 2,000 references/elements are changed, while the array shifts about 201 million positions. In W3 at the middle, the list loses because it must first traverse to the insertion/removal position, giving about 100 million steps despite only 3,000 reference updates. Therefore `MyLinkedList` is attractive for frequent head insertions/removals or when a node reference is already available, while `DynamicArray` is preferable for indexed access and compact storage. `MinHeap` is appropriate when the task repeatedly needs the minimum, because `peekMin()` is Θ(1) and `extractMin()` restores the heap in Θ(log n). The benchmark also illustrates why asymptotic complexity and real running time should be discussed together: memory layout and JVM behaviour affect the measured constants.
+`DynamicArray.get(i)` is much faster than `MyLinkedList.get(i)` because the array reaches the requested cell directly, while the list must follow about `i` links. In W1 at `n=100000`, this difference appears as 10,000 steps for the array versus 502,499,208 steps for the list. A cache line is commonly around 64 bytes, so it can hold 16 four-byte `int` values from a contiguous array and bring neighbouring values into cache together. This spatial locality helps the array even when the access pattern becomes less favourable than a single sequential scan. A linked list instead performs pointer chasing, and each node also has object/reference overhead, so the nodes are much less compact than four-byte array elements. This creates more memory traffic and can increase garbage-collector pressure. In W2, both structures perform the same 74,446,172 comparisons, but the array still finishes faster, 32.447 ms versus 109.406 ms, showing the effect of memory locality and object indirection. In W3 at the head, the linked list is better because only 2,000 references/elements are changed, while the array shifts about 201 million positions. In W3 at the middle, the list loses because it must first traverse to the insertion/removal position, giving about 100 million steps despite only 3,000 reference updates. Therefore `MyLinkedList` is attractive for frequent head insertions/removals or when a node reference is already available, while `DynamicArray` is preferable for indexed access and compact storage. `MinHeap` is appropriate when the task repeatedly needs the minimum, because `peekMin()` is Θ(1) and `extractMin()` restores the heap in Θ(log n). The benchmark also illustrates why asymptotic complexity and real running time should be discussed together: memory layout and JVM behaviour affect the measured constants.
 
 ## 7. Testing
 
