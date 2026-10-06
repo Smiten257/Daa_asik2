@@ -260,8 +260,9 @@ public final class PlotGenerator {
                 boolean allZero = rows.stream().allMatch(r -> value(r, metric) == 0);
                 if (allZero) {
                     g.setColor(AXIS);
-                    g.drawString(metricLabel(metric) + " = 0 (not drawn)", x, yy + 4);
-                    yy += 20;
+                    g.drawString(metricLabel(metric) + " = 0", x, yy + 4);
+                    g.drawString("(not drawn)", x, yy + 20);
+                    yy += 38;
                 }
             }
         }
@@ -295,6 +296,8 @@ public final class PlotGenerator {
     }
 
     static void axes(Graphics2D g, int left, int right, int top, int bottom, Scale scale, String yLabel) {
+        g.setStroke(new BasicStroke(1f));
+        g.setFont(new Font("SansSerif", Font.PLAIN, 12));
         g.setColor(GRID);
         for (int n : X_TICKS) {
             int xx = px(n, left, right);
@@ -363,6 +366,7 @@ public final class PlotGenerator {
 
     static void drawMarker(Graphics2D g, int x, int y, Color c, Metric metric) {
         g.setColor(c);
+        g.setStroke(new BasicStroke(2f));
         int s = 7;
         switch (metric) {
             case STEPS -> g.draw(new Ellipse2D.Double(x - s, y - s, 2*s, 2*s));
