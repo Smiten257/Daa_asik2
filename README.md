@@ -92,4 +92,13 @@ pom.xml
 
 ## Git
 
-The Git repository, branch history, release tag, and remote URL are recorded in the final project repository. The expected main branch is `main` and the release tag is `v1.0`.
+The project uses the required branch structure and release tag:
+
+- `main`
+- `feature/array`
+- `feature/list`
+- `feature/heap`
+- `feature/metrics`
+- tag `v1.0`
+
+The remote repository URL is the only value that depends on the GitHub repository created for submission. Add the final GitHub URL here after `git remote add origin <URL>` and push the branches and tag.
