@@ -101,4 +101,6 @@ The project uses the required branch structure and release tag:
 - `feature/metrics`
 - tag `v1.0`
 
-The remote repository URL is the only value that depends on the GitHub repository created for submission. Add the final GitHub URL here after `git remote add origin <URL>` and push the branches and tag.
+  GitHub repository: https://github.com/Smiten257/Daa_asik2
+
+  Branch `main`, release tag `v1.0`.
